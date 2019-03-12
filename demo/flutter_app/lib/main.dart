@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(title: Text("Makiko")),
             MakikoInput(
               label: "Comment",
+              defaultText: "你好",
               styles: const InputStyles(
                 color: Color(0xffb4b4ab),
                 textStyle: TextStyle(color: Color(0xffdb786d)),
@@ -52,20 +53,57 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: Icons.mode_comment,
                 inputPadding: const EdgeInsets.all(16),
                 height: 50.0,
-                margin: const EdgeInsets.only(bottom: 16.0)
+                margin: const EdgeInsets.only(bottom: 16.0),
+                backgroundColor: Colors.tealAccent,
+                cursorColor: Colors.black
               ),
             ),
 
             MakikoInput(
               label: "Comment",
+              obscureText: true,
               styles: const InputStyles(
                 color: Colors.lightBlueAccent,
                 iconColor: Colors.white,
                 icon: Icons.mode_comment,
+                autoSuffix: true,
                 inputPadding: const EdgeInsets.all(16),
+                border: 0.2
+              ),
+              //child: Text("A"),
+            ),
+
+            ListTile(title: Text("Basic")),
+
+            BasicInput(
+              label: "User Name",
+              styles: const InputStyles(
+                  color: Color(0xffb4b4ab),
+                  iconColor: Colors.black38,
+                  icon: Icons.account_circle,
+                  margin: const EdgeInsets.only(bottom: 16.0),
+                  cursorWidth: 1.0,
+                  cursorColor: Colors.black,
               ),
             ),
+
+            BasicInput(
+              label: "Password",
+              obscureText: true,
+              styles: const InputStyles(
+                color: Color(0xffb4b4ab),
+                iconColor: Colors.black38,
+                icon: Icons.lock,
+                margin: const EdgeInsets.only(bottom: 16.0),
+                cursorWidth: 1.0,
+                cursorColor: Colors.black,
+              ),
+            ),
+
+
           ],
+
+
         ),
       ),
     );

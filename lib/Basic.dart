@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'InputStyles.dart';
 import 'SuffixIconMixin.dart';
 
-class MakikoInput extends StatefulWidget {
+class BasicInput extends StatefulWidget {
   final InputStyles styles;
   final String label;
   final String defaultText;
@@ -20,7 +20,7 @@ class MakikoInput extends StatefulWidget {
   final List<TextInputFormatter> inputFormatters;
   final FocusNode focusNode;
 
-  MakikoInput({
+  BasicInput({
     Key key,
     this.styles,
     this.label,
@@ -48,44 +48,23 @@ class MakikoInput extends StatefulWidget {
   State<StatefulWidget> createState() => new _State();
 }
 
-class _State extends State<MakikoInput> with TickerProviderStateMixin, SuffixIconMixin {
-  AnimationController _ani;
+class _State extends State<BasicInput> with SuffixIconMixin {
   FocusNode _focusNode;
   TextEditingController _controller;
-
-  bool isAni = false;
 
   @override
   void initState() {
     super.initState();
-
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(() {
-      setState(() {
-        isAni = true;
-        if (_focusNode.hasFocus) {
-          isAni = true;
-          _ani.forward();
-        } else {
-          _ani.animateBack(0.0, duration: Duration(milliseconds: 1));
-        }
-      });
+      setState(() {});
     });
-
-    _ani = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
-    _ani.addStatusListener((ss) {
-      if (ss == AnimationStatus.completed)
-        setState(() {
-          isAni = false;
-        });
-    });
-
     _controller = widget.controller ?? new TextEditingController(text: widget.defaultText);
     initSuffixIconState(_controller, widget.obscureText, widget.styles);
   }
 
   @override
-  void didUpdateWidget(MakikoInput oldWidget) {
+  void didUpdateWidget(BasicInput oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller == null && oldWidget.controller != null)
       _controller = TextEditingController.fromValue(oldWidget.controller.value);
@@ -101,7 +80,6 @@ class _State extends State<MakikoInput> with TickerProviderStateMixin, SuffixIco
   @override
   void dispose() {
     _focusNode?.dispose();
-    _ani.dispose();
     disposeSuffixIcon();
     super.dispose();
   }
@@ -124,7 +102,7 @@ class _State extends State<MakikoInput> with TickerProviderStateMixin, SuffixIco
       maxLines: widget.maxLines ?? 1,
       maxLengthEnforced: false,
       inputFormatters: widget.inputFormatters,
-      style: _hasFocus || !isEmpty ? styles.textStyle : TextStyle(color: styles.iconColor),
+      style: styles.textStyle,
       enableInteractiveSelection: widget.enableInteractiveSelection,
       cursorColor: styles.cursorColor,
       cursorRadius: styles.cursorRadius,
@@ -136,15 +114,15 @@ class _State extends State<MakikoInput> with TickerProviderStateMixin, SuffixIco
         return SizedBox();
       },
       decoration: InputDecoration(
-        contentPadding: styles.inputPadding,
+        contentPadding: styles.inputPadding ?? const EdgeInsets.only(top: 12.0, right: 12.0, bottom: 12.0, left: 5.0),
         border: InputBorder.none,
         enabled: widget.enabled ?? true,
-        hintText: !_hasFocus ? widget.label : null,
-        hintStyle: _hasFocus ? null : TextStyle(color: styles.iconColor ?? Colors.white),
-        isDense: false,
-        hasFloatingPlaceholder: false,
-        alignLabelWithHint: false,
-        prefixIcon: _hasFocus || !isEmpty || styles.icon == null ? null : Icon(styles.icon, color: styles.iconColor ?? Colors.white),
+        labelText: widget.label,
+        labelStyle: styles.labelStyle ??
+            TextStyle(fontSize: 14.0, color: Colors.black38, letterSpacing: 1.5, fontWeight: FontWeight.w300, height: 0.5),
+        filled: styles.backgroundColor == null ? false : true,
+        fillColor: styles.backgroundColor,
+        prefixIcon: styles.icon == null ? null : Icon(styles.icon, color: styles.iconColor ?? Colors.white),
         suffixIcon: buildSuffixIcon(context, styles, widget.child, _hasFocus),
       ),
       focusNode: _focusNode,
@@ -152,72 +130,24 @@ class _State extends State<MakikoInput> with TickerProviderStateMixin, SuffixIco
 
     final color = styles.borderColor ?? Colors.black;
 
-    return Stack(
-      children: <Widget>[
-        AniBackLayout(
-          height: styles.height ?? 50.0,
-          aning: isAni && isEmpty,
-          animation: _ani,
-          color: styles.backgroundColor ?? Colors.white,
-          bgColor: (_hasFocus && !isAni) || !isEmpty ? (styles.backgroundColor ?? Colors.white) : styles.color,
-        ),
-        Container(
-          child: Theme(
-            data: Theme.of(context).copyWith(splashColor: Colors.transparent),
-            child: view,
-          ),
-          margin: styles.margin,
-          width: styles.width,
-          height: styles.height ?? 50.0,
-          decoration: styles.border == null || styles.border <= 0.001 ? null : BoxDecoration(
-              border: Border.all(color: _hasFocus ? color : color.withAlpha(100), width: styles.border ?? 0.3)
-          ),
-        ),
-      ],
+    return Container(
+      child: Theme(
+        data: Theme.of(context).copyWith(splashColor: Colors.transparent),
+        child: DefaultTextStyle(style: TextStyle(
+          color: Colors.black87,
+          letterSpacing: 1.5,
+          fontWeight: FontWeight.w500
+        ), child: view),
+      ),
+      margin: styles.margin,
+      width: styles.width,
+      height: styles.height,
+      decoration: styles.border != null && styles.border <= 0.001 ? null : BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: _hasFocus ? color : color.withAlpha(100), width: styles.border ?? 0.3),
+        )
+      ),
     );
   }
 
-}
-
-class AniBackLayout extends StatefulWidget {
-  final AnimationController animation;
-  final Color color, bgColor;
-  final bool aning;
-  final double height;
-  const AniBackLayout({Key key, this.color = Colors.white, this.bgColor, this.aning, this.height, this.animation});
-  @override
-  State<StatefulWidget> createState() {
-    return new _AniBackLayoutState();
-  }
-}
-
-class _AniBackLayoutState extends State<AniBackLayout> {
-
-  @override
-  Widget build(BuildContext context) {
-    if (!widget.aning)
-      return Container(
-        color: widget.bgColor, width: double.infinity, height: widget.height,
-      );
-    return AnimatedBuilder(animation: widget.animation, builder: (context, child) {
-      RenderBox box = context.findRenderObject();
-      Animation<double> animation = Tween(
-        begin: 0.0,
-        end: box != null ? box.constraints.maxWidth + 20.0 : 0.0,
-      ).animate(widget.animation);
-      return ClipRect(
-        child: Stack(
-          children: <Widget>[
-            Container(color: widget.bgColor, height: widget.height),
-            Container(
-                color: widget.color,
-                height: widget.height,
-                width: animation.value,
-                transform: Matrix4.skew(3.0, 0.0)
-            )
-          ],
-        ),
-      );
-    });
-  }
 }
