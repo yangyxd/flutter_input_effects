@@ -12,7 +12,7 @@ class BasicInput extends StatefulWidget {
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
   final TextEditingController controller;
-  final bool autoFocus, obscureText, enabled, autocorrect, enableInteractiveSelection;
+  final bool autoFocus, obscureText, enabled, autocorrect, enableInteractiveSelection, isStatic;
   final int maxLength, maxLines;
   final ValueChanged<String> onChanged;
   final VoidCallback onEditingComplete;
@@ -34,6 +34,7 @@ class BasicInput extends StatefulWidget {
     this.enabled = true,
     this.enableInteractiveSelection = false,
     this.autocorrect = false,
+    this.isStatic = false,
     this.maxLength,
     this.maxLines,
     this.focusNode,
@@ -88,7 +89,6 @@ class _State extends State<BasicInput> with SuffixIconMixin {
   Widget build(BuildContext context) {
     final styles = widget.styles;
     final _hasFocus = _focusNode.hasFocus;
-    final isEmpty = _controller.value.text.isEmpty;
 
     Widget view = TextField(
       maxLength: widget.maxLength,
@@ -114,21 +114,30 @@ class _State extends State<BasicInput> with SuffixIconMixin {
         return SizedBox();
       },
       decoration: InputDecoration(
-        contentPadding: styles.inputPadding ?? const EdgeInsets.only(top: 12.0, right: 12.0, bottom: 12.0, left: 5.0),
+        contentPadding: styles.inputPadding ?? EdgeInsets.only(top: widget.isStatic ? 14.0 : 12.0, right: 12.0, bottom: 12.0, left: 5.0),
         border: InputBorder.none,
         enabled: widget.enabled ?? true,
-        labelText: widget.label,
-        labelStyle: styles.labelStyle ??
+        hintText: widget.isStatic ? widget.label : null,
+        hintStyle: widget.isStatic ? styles.labelStyle : null,
+        labelText: widget.isStatic ? null : widget.label,
+        labelStyle: widget.isStatic ? null : styles.labelStyle ??
             TextStyle(fontSize: 14.0, color: Colors.black38, letterSpacing: 1.5, fontWeight: FontWeight.w300, height: 0.5),
-        filled: styles.backgroundColor == null ? false : true,
+        filled: styles.backgroundColor == null || widget.isStatic ? false : true,
         fillColor: styles.backgroundColor,
-        prefixIcon: styles.icon == null ? null : Icon(styles.icon, color: styles.iconColor ?? Colors.white),
+        icon: !widget.isStatic || styles.icon == null ? null : Icon(styles.icon, color: styles.iconColor ?? Colors.black38),
+        prefixIcon: widget.isStatic || styles.icon == null ? null : Icon(styles.icon, color: styles.iconColor ?? Colors.black38),
         suffixIcon: buildSuffixIcon(context, styles, widget.child, _hasFocus),
       ),
       focusNode: _focusNode,
     );
 
     final color = styles.borderColor ?? Colors.black;
+    final decoration = styles.border != null && styles.border <= 0.001 ? null : BoxDecoration(
+        color: widget.isStatic ? styles.backgroundColor: null,
+        border: Border(
+          bottom: BorderSide(color: _hasFocus ? color : color.withAlpha(100), width: styles.border ?? 0.3),
+        )
+    );
 
     return Container(
       child: Theme(
@@ -140,13 +149,11 @@ class _State extends State<BasicInput> with SuffixIconMixin {
         ), child: view),
       ),
       margin: styles.margin,
+      padding: styles.padding ?? widget.isStatic ? const EdgeInsets.only(left: 8.0) : null,
       width: styles.width,
       height: styles.height,
-      decoration: styles.border != null && styles.border <= 0.001 ? null : BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: _hasFocus ? color : color.withAlpha(100), width: styles.border ?? 0.3),
-        )
-      ),
+      color: widget.isStatic && decoration == null ? styles.backgroundColor : null,
+      decoration: decoration,
     );
   }
 

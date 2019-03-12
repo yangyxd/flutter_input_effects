@@ -6,7 +6,7 @@ class InputStyles {
   final IconData icon;
   final String label;
   final TextStyle textStyle, labelStyle;
-  final EdgeInsets inputPadding, margin, suffixMargin;
+  final EdgeInsets inputPadding, margin, padding, suffixMargin;
   final double height;
   final double width;
   final double border;
@@ -30,6 +30,7 @@ class InputStyles {
     this.textStyle,
     this.inputPadding,
     this.margin,
+    this.padding,
     this.width,
     this.height,
     this.border,

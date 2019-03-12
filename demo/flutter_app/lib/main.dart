@@ -100,6 +100,19 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
 
+            ListTile(title: Text("Static Basic")),
+
+            BasicInput(
+              label: "User Name",
+              isStatic: true,
+              styles: const InputStyles(
+                icon: Icons.account_circle,
+                margin: const EdgeInsets.only(bottom: 16.0),
+                cursorWidth: 1.0,
+                cursorColor: Colors.black,
+                backgroundColor: Colors.white30,
+              ),
+            ),
 
           ],
 
