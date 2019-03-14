@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(title: Text("Makiko")),
             MakikoInput(
               label: "Comment",
-              defaultText: "你好",
+              defaultText: "Hello",
               styles: const InputStyles(
                 color: Color(0xffb4b4ab),
                 textStyle: TextStyle(color: Color(0xffdb786d)),
@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
               label: "User Name",
               isStatic: true,
               styles: const InputStyles(
-                icon: Icons.account_circle,
+                prefixIcon: Icons.account_circle,
                 margin: const EdgeInsets.only(bottom: 16.0),
                 cursorWidth: 1.0,
                 cursorColor: Colors.black,

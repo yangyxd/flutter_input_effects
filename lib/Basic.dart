@@ -124,8 +124,8 @@ class _State extends State<BasicInput> with SuffixIconMixin {
             TextStyle(fontSize: 14.0, color: Colors.black38, letterSpacing: 1.5, fontWeight: FontWeight.w300, height: 0.5),
         filled: styles.backgroundColor == null || widget.isStatic ? false : true,
         fillColor: styles.backgroundColor,
-        icon: !widget.isStatic || styles.icon == null ? null : Icon(styles.icon, color: styles.iconColor ?? Colors.black38),
-        prefixIcon: widget.isStatic || styles.icon == null ? null : Icon(styles.icon, color: styles.iconColor ?? Colors.black38),
+        icon: styles.icon == null ? null :Icon(styles.icon, color: styles.iconColor ?? Colors.black38),
+        prefixIcon: styles.prefixIcon == null ? null : Icon(styles.prefixIcon, color: styles.iconColor ?? Colors.black38),
         suffixIcon: buildSuffixIcon(context, styles, widget.child, _hasFocus),
       ),
       focusNode: _focusNode,
@@ -142,14 +142,10 @@ class _State extends State<BasicInput> with SuffixIconMixin {
     return Container(
       child: Theme(
         data: Theme.of(context).copyWith(splashColor: Colors.transparent),
-        child: DefaultTextStyle(style: TextStyle(
-          color: Colors.black87,
-          letterSpacing: 1.5,
-          fontWeight: FontWeight.w500
-        ), child: view),
+        child: view,
       ),
       margin: styles.margin,
-      padding: styles.padding ?? widget.isStatic ? const EdgeInsets.only(left: 8.0) : null,
+      padding: styles.padding,
       width: styles.width,
       height: styles.height,
       color: widget.isStatic && decoration == null ? styles.backgroundColor : null,

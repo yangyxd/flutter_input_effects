@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class InputStyles {
   final Color color, iconColor, backgroundColor, borderColor;
   final IconData icon;
+  final IconData prefixIcon;
   final String label;
   final TextStyle textStyle, labelStyle;
   final EdgeInsets inputPadding, margin, padding, suffixMargin;
@@ -25,6 +26,7 @@ class InputStyles {
     this.borderColor,
     this.iconColor,
     this.icon,
+    this.prefixIcon,
     this.label,
     this.labelStyle,
     this.textStyle,

@@ -42,14 +42,14 @@ mixin SuffixIconMixin<T extends StatefulWidget> on State<T> {
       child: Container(
         width: styles.suffixIconSize,
         height: styles.suffixIconSize,
-        alignment: Alignment.center,
-        margin: styles.suffixMargin ?? const EdgeInsets.only(left: 16.0, bottom: 1.0, right: 1.0),
+        margin: styles.suffixMargin ?? const EdgeInsets.only(left: 8.0, right: 1.0),
         child: IconTheme.merge(
-            data: IconThemeData(
-                size: 16.0,
-                color: styles.suffixIconColor ?? Colors.black26
-            ),
-            child: icon,
+          data: IconThemeData(
+              size: 16.0,
+              opacity: 0.75,
+              color: styles.suffixIconColor ?? Colors.black26
+          ),
+          child: icon,
         ),
       ),
     );
@@ -60,7 +60,7 @@ mixin SuffixIconMixin<T extends StatefulWidget> on State<T> {
       width: styles.suffixIconSize,
       height: styles.suffixIconSize,
       alignment: Alignment.center,
-      margin: styles.suffixMargin ?? const EdgeInsets.only(left: 16.0, bottom: 1.0, right: 1.0),
+      margin: styles.suffixMargin ?? const EdgeInsets.only(left: 8.0, bottom: 1.0, right: 1.0),
       child: IconTheme.merge(
         data: IconThemeData(
             size: 16.0,
